@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Undefined | Let's simplify redux - I</title>
+  <meta name="description" content="A guide to simplify the task of setting up redux">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Let's simplify redux - I">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="http://localhost:4000/posts/lets-simplify-redux-i">
+  <meta property="og:description" content="A guide to simplify the task of setting up redux">
+  <meta property="og:site_name" content="Undefined">
+  <meta property="og:image" content="http://localhost:4000/assets/og-image.jpg">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="http://localhost:4000/posts/lets-simplify-redux-i">
+  <meta name="twitter:title" content="Let's simplify redux - I">
+  <meta name="twitter:description" content="A guide to simplify the task of setting up redux">
+  <meta name="twitter:image" content="http://localhost:4000/assets/og-image.jpg">
+
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link href="http://localhost:4000/feed.xml" type="application/rss+xml" rel="alternate" title="Undefined Last 10 blog posts">
+
+  
+    <link type="text/css" rel="stylesheet" href="/assets/light.css">
+  
+</head>
+
+<body>
+  <main role="main">
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav reveal">
+  <a href="/" class="header-logo" title="Undefined">Undefined</a>
+  <ul class="header-links">
+    
+    
+      <li>
+        <a href="https://twitter.com/Anshulsahni93" target="_blank" title="Twitter">
+          <span class="icon icon-social-twitter"></span>
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://www.facebook.com/anshul.sahni.52" target="_blank" title="Facebook">
+          <span class="icon icon-social-facebook"></span>
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://github.com/anshulsahni" target="_blank" title="GitHub">
+          <span class="icon icon-social-github"></span>
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/anshul-sahni-66080963" target="_blank" title="LinkedIn">
+          <span class="icon icon-social-linkedin"></span>
+        </a>
+      </li>
+    
+    
+    
+      <li>
+        <a href="mailto:anshul_sahni@live.com" title="Email">
+          <span class="icon icon-at"></span>
+        </a>
+      </li>
+    
+    
+  </ul>
+</nav>
+
+        <article class="article reveal">
+          <header class="article-header">
+            <h1>Let's simplify redux - I</h1>
+            <p>A guide to simplify the task of setting up redux</p>
+            <div class="article-list-footer">
+              <span class="article-list-date">
+                March 9, 2017
+              </span>
+              <span class="article-list-divider">-</span>
+              <span class="article-list-minutes">
+                
+                
+                  5 minute read
+                
+              </span>
+              <span class="article-list-divider">-</span>
+              <div class="article-list-tags">
+                
+                  <a href="/tag/redux.%20react">redux. react</a>
+                
+              </div>
+            </div>
+          </header>
+
+          <div class="article-content">
+            <p>Hey react developers out there, if you haven’t tried your hand on redux yet you are missing out something important so just visit this <a href="http://redux.js.org/">Redux Link</a> .</p>
+
+<p>So assuming that you might be knowing redux by the time you reach this line, I move forward. Creating redux global state is such a pain, there are <em>n</em>  number of files for just one part of redux state out of many and then combining them all is an unbearable pain.</p>
+
+<p>Assuming everyone goes through the below mentioned <strong>irritating things</strong> , I am summing them up together below:</p>
+
+<ol>
+  <li>
+    <p>Every reducer function which receives the state and action is nothing but either a combinations of lots of <em>if…else</em>  statements or <em>switch</em> cases which again does nothing by themselves but just call the corresponding the function to return  <strong>modified state</strong>.</p>
+  </li>
+  <li>
+    <p>There are numerous actions where we dont return anything other than the type  which again is sometimes the <strong>kebab case</strong> of the name of the function, like the one given below</p>
+
+    <div class="language-javascript highlighter-rouge">
+<pre class="highlight"><code> <span class="kr">const</span> <span class="nx">setNetworkBusy</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">({</span>
+   <span class="na">type</span><span class="p">:</span> <span class="nx">constants</span><span class="p">.</span><span class="nx">SET_NETWORK_BUSY</span>
+ <span class="p">});</span>
+</code></pre>
+    </div>
+  </li>
+  <li>
+    <p>Lastly, but not at least on the list, is declaring constants in which we keep writing lines, for example</p>
+
+    <div class="language-javascript highlighter-rouge">
+<pre class="highlight"><code>   <span class="kr">const</span> <span class="nx">ADD_MESSAGE</span> <span class="o">=</span> <span class="s1">'ADD_MESSAGE'</span><span class="p">;</span>
+   <span class="kr">const</span> <span class="nx">UPDATE_MESSAGE</span> <span class="o">=</span> <span class="s1">'UPDATE_MESSAGE'</span><span class="p">;</span>
+</code></pre>
+    </div>
+  </li>
+</ol>
+
+<p>So even after so many pains redux is still invincible to me, so I came up with some short tricks which simplified my work back in react apps, let’s see if this caters to your needs.</p>
+
+<ol>
+  <li>
+    <p><strong>getConsts()</strong>:</p>
+
+    <p><em>This method returns an object which contains all the constants as the keys of alll object and value also being the same</em>.</p>
+
+    <p><em>Method goes like this</em></p>
+    <div class="language-javascript highlighter-rouge">
+<pre class="highlight"><code>   <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+     <span class="kr">const</span> <span class="nx">constants</span> <span class="o">=</span> <span class="p">{};</span>
+
+     <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">arg</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">arg</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">arg</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+       <span class="nx">constants</span><span class="p">[</span><span class="nx">arguments</span><span class="p">[</span><span class="nx">arg</span><span class="p">]]</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">arg</span><span class="p">];</span>
+     <span class="p">}</span>
+
+     <span class="k">return</span> <span class="nx">constants</span><span class="p">;</span>
+   <span class="p">};</span>
+</code></pre>
+    </div>
+
+    <p><em>Usage goes like this</em></p>
+    <div class="language-javascript highlighter-rouge">
+<pre class="highlight"><code>   <span class="c1">// old style</span>
+
+   <span class="kr">export</span> <span class="kr">const</span> <span class="nx">ADD_MESSAGE</span> <span class="o">=</span> <span class="s1">'ADD_MESSAGE'</span><span class="p">;</span>
+   <span class="kr">export</span> <span class="kr">const</span> <span class="nx">DELETE_MESSAGE</span> <span class="o">=</span> <span class="s1">'DELETE_MESSAGE'</span><span class="p">;</span>
+   <span class="kr">export</span> <span class="kr">const</span> <span class="nx">UPDATE_MESSAGE</span> <span class="o">=</span> <span class="s1">'UPDATE_MESSAGE'</span><span class="p">;</span>
+
+   <span class="c1">//using getConsts()</span>
+   <span class="kr">export</span> <span class="k">default</span> <span class="nx">getConsts</span><span class="p">(</span>
+     <span class="s1">'ADD_MESSAGE'</span><span class="p">,</span>
+     <span class="s1">'UPDATE_MESSAGE'</span><span class="p">,</span>
+     <span class="s1">'DELETE_MESSAGE'</span><span class="p">,</span>
+   <span class="p">);</span>
+   <span class="cm">/*
+     output:
+     {
+       ADD_MESSAGE: "ADD_MESSAGE",
+       UPDATE_MESSAGE: "UPDATE_MESSAGE",
+       DELETE_MESSAGE: "DELETE_MESSAGE"
+     }
+    */</span>
+</code></pre>
+    </div>
+    <p><em>Drawbacks</em>: <strong>No independent exporting of constants</strong></p>
+
+    <hr>
+  </li>
+  <li>
+    <p><strong>getSimpleActionCreators()</strong>:</p>
+
+    <p><em>It helps in creating the action creators which returns only type and which is same as the name of action creator method but with different casing</em>.</p>
+
+    <p><em>method goes like this</em></p>
+    <div class="language-javascript highlighter-rouge">
+<pre class="highlight"><code>   <span class="kr">const</span> <span class="nx">captilize</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+     <span class="c1">//Code to capitalize the first letter of give string</span>
+   <span class="p">};</span>
+
+   <span class="kr">const</span> <span class="nx">getCamelCase</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+     <span class="c1">//Code to conver 'GET_MESSAGES' to 'getMessages'</span>
+   <span class="p">};</span>
+
+   <span class="kr">const</span> <span class="nx">getAction</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">constant</span><span class="p">)</span> <span class="p">{</span>
+     <span class="k">return</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+       <span class="k">return</span> <span class="p">{</span>
+         <span class="na">type</span><span class="p">:</span> <span class="nx">constant</span>
+       <span class="p">};</span>
+     <span class="p">};</span>
+   <span class="p">};</span>
+
+   <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+     <span class="kr">const</span> <span class="nx">methods</span> <span class="o">=</span> <span class="p">{};</span>
+     <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">constant</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">constant</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">constant</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+       <span class="nx">methods</span><span class="p">[</span><span class="nx">getCamelCase</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="nx">constant</span><span class="p">])]</span> <span class="o">=</span> <span class="nx">getAction</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="nx">constant</span><span class="p">]);</span>
+     <span class="p">}</span>
+     <span class="k">return</span> <span class="nx">methods</span><span class="p">;</span>
+   <span class="p">};</span>
+</code></pre>
+    </div>
+
+    <p><em>Usage goes like this</em></p>
+    <div class="language-javascript highlighter-rouge">
+<pre class="highlight"><code>   <span class="c1">//old style</span>
+
+   <span class="kr">export</span> <span class="kr">const</span> <span class="nx">setNetworkBusy</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">({</span>
+     <span class="na">type</span><span class="p">:</span> <span class="nx">constants</span><span class="p">.</span><span class="nx">SET_NETWORK_BUSY</span><span class="p">,</span>
+   <span class="p">});</span>
+
+   <span class="c1">// using getSimpleActionCreators</span>
+   <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+     <span class="p">...</span><span class="nx">getSimpleActionCreators</span><span class="p">(</span>
+       <span class="nx">constants</span><span class="p">.</span><span class="nx">SET_NETWORK_BUSY</span><span class="p">,</span>
+       <span class="nx">constatns</span><span class="p">.</span><span class="nx">CLEAR_ALL_MESSAGES</span><span class="p">,</span>
+     <span class="p">),</span>
+   <span class="p">}</span>
+
+   <span class="cm">/*
+     output
+     {
+       setNetworkBusy: () =&gt; ({
+         type: 'SET_NETWORK_BUSY'
+       }),
+
+       clearAllMessages: () =&gt; ({
+         type: 'CLEAR_ALL_MESSAGES'
+       }),
+     }
+   */</span>
+</code></pre>
+    </div>
+    <p><em>Drawbacks</em>: <strong>Applicable only on particular action creator method</strong></p>
+
+    <hr>
+  </li>
+  <li>
+    <p><strong>createReducer</strong>:</p>
+
+    <p>Creating reducer is the most boring work of all the times, moreover I dont like my code to get occupied by <strong>unnecessary  switch cases</strong></p>
+
+    <p>So my createReducer <em>takes in initialState and an object containing actions as key and corresponding methods to be executed as values of those keys</em>.</p>
+
+    <p><em>method goes like this</em></p>
+    <div class="language-javascript highlighter-rouge">
+<pre class="highlight"><code>   <span class="kd">function</span> <span class="p">(</span><span class="nx">initialState</span><span class="p">,</span> <span class="nx">handlers</span><span class="p">)</span> <span class="p">{</span>
+     <span class="kd">var</span> <span class="nx">_handlers</span> <span class="o">=</span> <span class="nx">handlers</span> <span class="o">||</span> <span class="p">{};</span>
+     <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+       <span class="kr">const</span> <span class="nx">handler</span> <span class="o">=</span> <span class="nx">_handlers</span><span class="p">[</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">];</span>
+       <span class="kd">var</span> <span class="nx">_state</span> <span class="o">=</span> <span class="nx">state</span> <span class="o">||</span> <span class="nx">initialState</span><span class="p">;</span>
+       <span class="k">if</span> <span class="p">(</span><span class="nx">handler</span><span class="p">)</span> <span class="p">{</span>
+         <span class="k">return</span> <span class="nx">handler</span><span class="p">(</span><span class="nx">_state</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
+       <span class="p">}</span>
+       <span class="k">return</span> <span class="nx">_state</span><span class="p">;</span>
+     <span class="p">};</span>
+   <span class="p">};</span>
+</code></pre>
+    </div>
+
+    <p><em>Usage goes like this</em></p>
+    <div class="language-javascript highlighter-rouge">
+<pre class="highlight"><code>   <span class="c1">// old style</span>
+
+   <span class="cm">/*
+     ummm I dont even know the old style ;)
+   */</span>
+
+   <span class="c1">// using createReducer</span>
+
+   <span class="kr">const</span> <span class="nx">initialState</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="na">messages</span><span class="p">:</span> <span class="p">[],</span>
+   <span class="p">};</span>
+
+   <span class="kr">export</span> <span class="k">default</span> <span class="nx">createReducer</span><span class="p">(</span><span class="nx">initialState</span><span class="p">,</span> <span class="p">{</span>
+     <span class="p">[</span><span class="nx">constants</span><span class="p">.</span><span class="nx">ADD_MESSAGE</span><span class="p">]:</span> <span class="nx">onAddMessage</span><span class="p">,</span>
+     <span class="p">[</span><span class="nx">constants</span><span class="p">.</span><span class="nx">UPDATE_MESSAGE</span><span class="p">]:</span> <span class="nx">onUpdateMessage</span><span class="p">,</span>
+     <span class="p">[</span><span class="nx">constants</span><span class="p">.</span><span class="nx">DELETE_MESSAGE</span><span class="p">]:</span> <span class="nx">onDeleteMessage</span><span class="p">,</span>
+   <span class="p">});</span>
+</code></pre>
+    </div>
+  </li>
+</ol>
+
+<p>After all this story telling, checkout this npm module - <a href="https://github.com/anshulsahni/simplify-redux">simplify-redux</a>, which gives all the functions wrapped in a single package.</p>
+
+<p><em>Ps - This npm module is made by me <img class="emoji" title=":stuck_out_tongue:" alt=":stuck_out_tongue:" src="https://assets-cdn.github.com/images/icons/emoji/unicode/1f61b.png" height="20" width="20" align="absmiddle"></em></p>
+
+          </div>
+
+          <div class="article-share">
+            
+            <a href="" title="Share on Twitter" onclick="window.open('https://twitter.com/home?status=Let's simplify redux - I - http://localhost:4000/posts/lets-simplify-redux-i by @Anshulsahni93', 'newwindow', 'width=500, height=225'); return false;" data-turbolinks="false">
+              <svg enable-background="new 0 0 128 128" width="15px" version="1.1" viewbox="0 0 128 128" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="_x37__stroke"><g id="Twitter"><rect clip-rule="evenodd" fill="none" fill-rule="evenodd" height="128" width="128"></rect><path clip-rule="evenodd" d="M128,23.294    c-4.703,2.142-9.767,3.59-15.079,4.237c5.424-3.328,9.587-8.606,11.548-14.892c-5.079,3.082-10.691,5.324-16.687,6.526    c-4.778-5.231-11.608-8.498-19.166-8.498c-14.493,0-26.251,12.057-26.251,26.927c0,2.111,0.225,4.16,0.676,6.133    C41.217,42.601,21.871,31.892,8.91,15.582c-2.261,3.991-3.554,8.621-3.554,13.552c0,9.338,4.636,17.581,11.683,22.412    c-4.297-0.131-8.355-1.356-11.901-3.359v0.331c0,13.051,9.053,23.937,21.074,26.403c-2.201,0.632-4.523,0.948-6.92,0.948    c-1.69,0-3.343-0.162-4.944-0.478c3.343,10.694,13.035,18.483,24.53,18.691c-8.986,7.227-20.315,11.533-32.614,11.533    c-2.119,0-4.215-0.123-6.266-0.37c11.623,7.627,25.432,12.088,40.255,12.088c48.309,0,74.717-41.026,74.717-76.612    c0-1.171-0.023-2.342-0.068-3.49C120.036,33.433,124.491,28.695,128,23.294" fill-rule="evenodd" id="Twitter_1_"></path></g></g></svg>
+            </a>
+            <a href="" title="Share on Facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=http://localhost:4000/posts/lets-simplify-redux-i', 'newwindow', 'width=500, height=500'); return false;" data-turbolinks="false">
+              <svg enable-background="new 0 0 128 128" width="15px" version="1.1" viewbox="0 0 128 128" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="_x31__stroke"><g id="Facebook_1_"><rect fill="none" height="128" width="128"></rect><path clip-rule="evenodd" d="M68.369,128H7.065C3.162,128,0,124.836,0,120.935    V7.065C0,3.162,3.162,0,7.065,0h113.871C124.837,0,128,3.162,128,7.065v113.87c0,3.902-3.163,7.065-7.064,7.065H88.318V78.431    h16.638l2.491-19.318H88.318V46.78c0-5.593,1.553-9.404,9.573-9.404l10.229-0.004V20.094c-1.769-0.235-7.841-0.761-14.906-0.761    c-14.749,0-24.846,9.003-24.846,25.535v14.246H51.688v19.318h16.681V128z" fill-rule="evenodd" id="Facebook"></path></g></g></svg>
+            </a>
+            <a href="" title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=http://localhost:4000/posts/lets-simplify-redux-i', 'newwindow', 'width=550, height=400'); return false;" data-turbolinks="false">
+              <svg enable-background="new 0 0 128 128" version="1.1" viewbox="0 0 128 128" width="20px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="_x35__stroke"><g id="Google_Plus"><rect clip-rule="evenodd" fill="none" fill-rule="evenodd" height="128" width="128"></rect><path clip-rule="evenodd" d="M40.654,55.935v16.13    c0,0,15.619-0.021,21.979-0.021C59.189,82.5,53.834,88.194,40.654,88.194c-13.338,0-23.748-10.832-23.748-24.194    s10.41-24.194,23.748-24.194c7.052,0,11.607,2.483,15.784,5.944c3.344-3.35,3.065-3.828,11.573-11.877    c-7.222-6.586-16.822-10.6-27.357-10.6C18.201,23.273,0,41.507,0,64c0,22.493,18.201,40.727,40.654,40.727    c33.561,0,41.763-29.275,39.044-48.792H40.654z M113.912,56.742V42.628h-10.063v14.113H89.358v10.081h14.491v14.517h10.063V66.823    H128V56.742H113.912z" fill-rule="evenodd" id="Google_Plus_1_"></path></g></g></svg>
+            </a>
+          </div>
+
+          
+        </article>
+        <footer class="footer reveal">
+  <p>
+    Chalk is a high quality, completely customizable, performant and 100% free
+    blog template for Jekyll built by
+    <a href="/about" title="About me">Nielsen Ramon</a>. Download it <a href="https://github.com/nielsenramon/chalk" target="_blank" title="Download Chalk">here</a>.
+  </p>
+</footer>
+
+      </div>
+    </div>
+  </main>
+  <script type="text/javascript" src="/assets/vendor.js"></script>
+<script type="text/javascript" src="/assets/application.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>
+<script>
+  WebFont.load({
+    google: {
+      families: ['Cormorant Garamond:700', 'Lato:300,400,700']
+    }
+  });
+</script>
+
+
+
+</body>
+</html>
