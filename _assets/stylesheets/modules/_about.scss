@@ -4,7 +4,14 @@
 
 .about {
   padding: 100px 0;
+
   h1 {
     margin: 50px 0 15px;
+  }
+
+  p {
+    &:not(first-child) {
+      margin-top: 5px
+    }
   }
 }
