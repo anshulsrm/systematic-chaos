@@ -5,4 +5,4 @@
 /.asset-cache/*
 /_site/*
 /_assets/bower/*
-
+/bower_components/*
